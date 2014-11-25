@@ -78,4 +78,9 @@ public abstract class Reference<
                 : element != null
                 ? element.getText() : null;
     }
+
+    @Override
+    public String toString(){
+        return getClass().getSimpleName()+"("+getElement().getText()+")";
+    }
 }

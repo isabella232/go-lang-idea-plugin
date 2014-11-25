@@ -8,6 +8,7 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.impl.DebugUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import ro.redeul.google.go.inspection.fix.*;
@@ -26,6 +27,7 @@ import ro.redeul.google.go.lang.psi.toplevel.GoImportDeclarations;
 import ro.redeul.google.go.lang.psi.types.GoPsiTypeName;
 import ro.redeul.google.go.lang.psi.utils.GoPsiUtils;
 import ro.redeul.google.go.lang.psi.visitors.GoRecursiveElementVisitor;
+import ro.redeul.google.go.util.GoDebugUtil;
 import ro.redeul.google.go.util.GoUtil;
 
 import static ro.redeul.google.go.GoBundle.message;
@@ -43,6 +45,7 @@ public class UnresolvedSymbols extends AbstractWholeGoFileInspection {
     @Override
     protected void doCheckFile(@NotNull GoFile file,
                                @NotNull final InspectionResult result) {
+        //System.out.println(DebugUtil.psiToString(file, false));
         new GoRecursiveElementVisitor() {
             @Override
             public void visitShortVarDeclaration(GoShortVarDeclaration declaration) {
@@ -81,7 +84,14 @@ public class UnresolvedSymbols extends AbstractWholeGoFileInspection {
             }
 
             private void tryToResolveReference(PsiElement element, String name) {
-                if (GoPsiUtils.hasHardReferences(element) && resolveSafely(element, PsiElement.class) == null) {
+                boolean hasHardReferences = GoPsiUtils.hasHardReferences(element);
+                PsiElement ele = resolveSafely(element, PsiElement.class);
+                /*
+                System.out.println("tryToResolveReference "+element+" "+name+" "+
+                        hasHardReferences+" "+ele+" "+
+                        GoDebugUtil.DumpReferences(element.getReferences()));
+                        */
+                if (hasHardReferences && ele == null) {
                     LocalQuickFix[] fixes = null;
                     if (GoUtil.isFunctionNameIdentifier(element)) {
                         fixes = new LocalQuickFix[]{

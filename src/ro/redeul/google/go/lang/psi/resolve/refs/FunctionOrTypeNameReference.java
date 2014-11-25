@@ -45,4 +45,9 @@ public class FunctionOrTypeNameReference extends ReferenceWithSolver<GoLiteralId
     public void walkSolver(FunctionOrTypeNameSolver solver) {
         GoPsiScopesUtil.treeWalkUp(solver, getElement(), null, ResolveStates.initial());
     }
+
+    @Override
+    public String toString(){
+        return "FunctionOrTypeNameReference("+getElement().getName()+")";
+    }
 }

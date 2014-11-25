@@ -49,4 +49,8 @@ public class PackageReference extends ReferenceWithSolver<GoLiteralIdentifier, P
         return false;
     }
 
+    @Override
+    public String toString(){
+        return "PackageReference("+getElement().getName()+")";
+    }
 }
